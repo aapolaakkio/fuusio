@@ -25,7 +25,8 @@ export const EventsBlock: Block = {
       defaultValue: 'list',
       options: [
         { label: 'List (cards under each other)', value: 'list' },
-        { label: 'Tabs (one event visible at a time)', value: 'tabs' }
+        { label: 'Tabs (one event visible at a time)', value: 'tabs' },
+        { label: 'Calendar (month, week and day views)', value: 'calendar' }
       ],
       admin: {
         description:

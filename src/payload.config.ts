@@ -19,6 +19,7 @@ import { CardBlock } from './blocks/Card/config'
 import { CollapsibleBlock } from './blocks/Collapsible/config'
 import { EventsBlock } from './blocks/Events/config'
 import { PDFViewerBlock } from './blocks/PDFViewer/config'
+import { SectionCardsBlock } from './blocks/SectionCards/config'
 import { TeamBlock } from './blocks/Team/config'
 import { TwoColumnsBlock } from './blocks/TwoColumns/config'
 import { Documents } from './collections/Documents'
@@ -105,14 +106,30 @@ export default buildConfig({
       defaultTimezone: 'Europe/Helsinki'
     }
   },
-  blocks: [CardBlock, CollapsibleBlock, EventsBlock, PDFViewerBlock, TeamBlock, TwoColumnsBlock],
+  blocks: [
+    CardBlock,
+    CollapsibleBlock,
+    EventsBlock,
+    PDFViewerBlock,
+    SectionCardsBlock,
+    TeamBlock,
+    TwoColumnsBlock
+  ],
   collections: [Documents, Media, Pages, Users],
   globals: [MainNavigation, Footer, LandingPage, PartnerSection],
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures,
       BlocksFeature({
-        blocks: ['card', 'collapsible', 'events', 'pdf-viewer', 'team', 'two-columns']
+        blocks: [
+          'card',
+          'collapsible',
+          'events',
+          'pdf-viewer',
+          'section-cards',
+          'team',
+          'two-columns'
+        ]
       }),
       HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4', 'h5', 'h6'] }),
       LinkFeature({

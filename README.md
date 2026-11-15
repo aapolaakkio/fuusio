@@ -10,7 +10,8 @@ PostgreSQL, next-intl (fi/en).
 - **Landing page** (Payload global): hero with title, subtitle, buttons and optional background
   images, an optional announcement, and free content.
 - **Pages** (Payload collection): free content with a localized path, optional table of contents.
-- **Content blocks**: Events, Team, Card, Collapsible, Two Columns, PDF Viewer.
+- **Content blocks**: Events (list, tabs or calendar), Section Cards (3D link cards), Team, Card,
+  Collapsible, Two Columns, PDF Viewer.
 - **Sponsors**: the Partner Section global is shown at the bottom of every page.
 - **Media** and **Documents** (PDF) uploads, stored on disk in `public/media` and
   `public/documents`.

@@ -105,7 +105,7 @@ Blocks are Payload CMS content blocks used inside the Lexical rich text editor. 
 
 Blocks are registered in the Lexical editor config and rendered via JSX converters in `src/components/RichText/index.tsx`.
 
-Existing blocks: Card, Collapsible, Events (reads Ilmomasiina, see `src/lib/events.ts` and `src/lib/getEvents.ts`), PDFViewer, Team, TwoColumns.
+Existing blocks: Card, Collapsible, Events (reads Ilmomasiina, see `src/lib/events.ts` and `src/lib/getEvents.ts`; layouts: list, tabs, calendar), PDFViewer, SectionCards, Team, TwoColumns.
 
 ## i18n
 

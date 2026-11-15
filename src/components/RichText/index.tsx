@@ -11,6 +11,7 @@ import { Card } from '@/blocks/Card/Component'
 import { Collapsible } from '@/blocks/Collapsible/Component'
 import { Events } from '@/blocks/Events/Component'
 import { PDFViewer } from '@/blocks/PDFViewer/Component'
+import { SectionCards } from '@/blocks/SectionCards/Component'
 import { Team } from '@/blocks/Team/Component'
 import { TwoColumns } from '@/blocks/TwoColumns/Component'
 import type {
@@ -18,6 +19,7 @@ import type {
   CollapsibleBlock as CollapsibleBlockType,
   EventsBlock as EventsBlockType,
   PDFViewerBlock as PdfViewerBlockType,
+  SectionCardsBlock as SectionCardsBlockType,
   TeamBlock as TeamBlockType,
   TwoColumnsBlock as TwoColumnsBlockType
 } from '@/payload-types'
@@ -41,6 +43,7 @@ type NodeTypes =
       | CollapsibleBlockType
       | EventsBlockType
       | PdfViewerBlockType
+      | SectionCardsBlockType
       | TeamBlockType
       | TwoColumnsBlockType
     >
@@ -60,6 +63,7 @@ export const RichText = ({ data, locale, extraClassName }: RichTextProps) => {
       collapsible: ({ node }) => <Collapsible block={node.fields} locale={locale} />,
       events: ({ node }) => <Events block={node.fields} locale={locale} />,
       'pdf-viewer': ({ node }) => <PDFViewer block={node.fields} />,
+      'section-cards': ({ node }) => <SectionCards block={node.fields} />,
       team: ({ node }) => <Team block={node.fields} />,
       'two-columns': ({ node }) => <TwoColumns block={node.fields} locale={locale} />
     }

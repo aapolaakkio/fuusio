@@ -10,6 +10,24 @@ const messages = {
   footer: {
     copyright: '© {year} Fyysikkokilta ry'
   },
+  calendar: {
+    today: 'Today',
+    month: 'Month',
+    week: 'Week',
+    day: 'Day',
+    agenda: 'Agenda',
+    date: 'Date',
+    time: 'Time',
+    event: 'Event',
+    allDay: 'All Day',
+    workWeek: 'Work Week',
+    previous: 'Previous',
+    next: 'Next',
+    yesterday: 'Yesterday',
+    tomorrow: 'Tomorrow',
+    noEventsInRange: 'No events in this date range',
+    more: 'more'
+  },
   events: {
     title: 'Events',
     upcoming: 'Upcoming events',

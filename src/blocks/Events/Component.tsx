@@ -1,11 +1,15 @@
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import './calendar-styles.css'
+
 import type { Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
 import { env } from '@/env'
 import { formatShortDate, type SiteEvent, splitEvents } from '@/lib/events'
-import { getEvents } from '@/lib/getEvents'
+import { getEvents, ilmoEventUrl } from '@/lib/getEvents'
 import type { EventsBlock as EventsBlockType } from '@/payload-types'
 
+import { CalendarClient } from './CalendarClient'
 import { EventCard } from './EventCard'
 import { EventTabs } from './EventTabs'
 
@@ -38,6 +42,24 @@ export const Events = async ({ block, locale }: EventsProps) => {
   const card = (event: SiteEvent, dimmed = false) => (
     <EventCard key={event.id} event={event} locale={locale} now={now} dimmed={dimmed} />
   )
+
+  if (block.layout === 'calendar') {
+    return (
+      <CalendarClient
+        locale={locale}
+        // Open on the month of the next event, so the calendar is not empty at first sight
+        initialDate={(upcoming[0] ?? past[0]).start}
+        events={events.map((event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.start,
+          end: event.end,
+          location: event.location,
+          url: ilmoEventUrl(event.slug, locale)
+        }))}
+      />
+    )
+  }
 
   if (block.layout === 'tabs') {
     const chronological = [...past.toReversed(), ...upcoming]

@@ -23,6 +23,7 @@ export interface Config {
     collapsible: CollapsibleBlock;
     events: EventsBlock;
     'pdf-viewer': PDFViewerBlock;
+    'section-cards': SectionCardsBlock;
     team: TeamBlock;
     'two-columns': TwoColumnsBlock;
   };
@@ -161,7 +162,7 @@ export interface EventsBlock {
   /**
    * Tabs keep the page short: the reader picks an event and sees only that one. Good for the Fuusio week.
    */
-  layout: 'list' | 'tabs';
+  layout: 'list' | 'tabs' | 'calendar';
   show?: ('all' | 'upcoming' | 'past') | null;
   id?: string | null;
   blockName?: string | null;
@@ -252,6 +253,76 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectionCardsBlock".
+ */
+export interface SectionCardsBlock {
+  /**
+   * Big cards that link to pages, e.g. the jubilee year and the Fuusio week. They tilt in 3D when hovered.
+   */
+  cards: {
+    title: string;
+    page: number | Page;
+    description?: string | null;
+    /**
+     * Optional background image of the card.
+     */
+    image?: (number | null) | Media;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'section-cards';
+}
+/**
+ * Manage website pages
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Banner image of the page. Please ensure to provide a high enough quality image.
+   */
+  bannerImage?: (number | null) | Media;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * The URL path for this page. This will be auto-generated from the title if left empty. Please prefer flat paths, for example "/about" instead of "/about/index".
+   */
+  path: string;
+  /**
+   * Show a table of contents for the page. This will be shown in the left sidebar or above the content on mobile.
+   */
+  showTableOfContents?: boolean | null;
+  /**
+   * Make the page full width (no table of contents column). Good for pages with event tabs or team photos.
+   */
+  fullWidth?: boolean | null;
+  /**
+   * Prevent the page from being indexed by search engines.
+   */
+  noIndex?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "TeamBlock".
  */
 export interface TeamBlock {
@@ -324,54 +395,6 @@ export interface TwoColumnsBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'two-columns';
-}
-/**
- * Manage website pages
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  /**
-   * Banner image of the page. Please ensure to provide a high enough quality image.
-   */
-  bannerImage?: (number | null) | Media;
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * The URL path for this page. This will be auto-generated from the title if left empty. Please prefer flat paths, for example "/about" instead of "/about/index".
-   */
-  path: string;
-  /**
-   * Show a table of contents for the page. This will be shown in the left sidebar or above the content on mobile.
-   */
-  showTableOfContents?: boolean | null;
-  /**
-   * Make the page full width (no table of contents column). Good for pages with event tabs or team photos.
-   */
-  fullWidth?: boolean | null;
-  /**
-   * Prevent the page from being indexed by search engines.
-   */
-  noIndex?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

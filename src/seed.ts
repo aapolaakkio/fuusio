@@ -29,7 +29,7 @@ const heading = (value: string) => element('heading', [text(value)], { tag: 'h2'
 const block = (fields: Node): Node => ({ type: 'block', format: '', version: 2, fields })
 const richText = (...children: Node[]) => ({ root: element('root', children) }) as never
 
-const eventsBlock = (categories: string[], layout: 'list' | 'tabs', show = 'all') =>
+const eventsBlock = (categories: string[], layout: 'list' | 'tabs' | 'calendar', show = 'all') =>
   block({ blockType: 'events', categories, layout, show })
 
 // Skip the Next.js cache revalidation hooks: there is no Next.js server in a script.
@@ -129,6 +129,12 @@ if (existing.totalDocs > 0) {
 
 const created = []
 let navigationRowIds: (string | undefined)[] = []
+// Stable ids for the front page section cards, shared by both locales
+const sectionCardRowIds = ['juhlavuosi-card', 'fuusioviikko-card']
+const sectionCardTexts = [
+  { fi: 'Koko vuoden juhlatapahtumat', en: 'Celebrations throughout the year' },
+  { fi: 'Juhlaviikon ohjelma päivä päivältä', en: 'The programme of the week, day by day' }
+]
 for (const { fi, en } of pages) {
   const page = await payload.create({
     collection: 'pages',
@@ -160,8 +166,18 @@ for (const locale of ['fi', 'en'] as const) {
         : 'The 80th annual ball of the Guild of Physics, 13 March 2027',
       heroLinks: [{ label: 'Fuusio', url: '/fuusio' }],
       content: richText(
-        heading(fi ? 'Tulevat tapahtumat' : 'Upcoming events'),
-        eventsBlock(['Juhlavuositapahtumat', 'Fuusioviikko', 'Fuusio 80'], 'list', 'upcoming')
+        block({
+          blockType: 'section-cards',
+          cards: created.slice(0, 2).map((page, index) => ({
+            // On the English pass reuse the row ids so the Finnish texts are kept
+            id: sectionCardRowIds[index],
+            title: page[locale],
+            description: sectionCardTexts[index][locale],
+            page: page.id
+          }))
+        }),
+        heading(fi ? 'Kalenteri' : 'Calendar'),
+        eventsBlock(['Juhlavuositapahtumat', 'Fuusioviikko', 'Fuusio 80'], 'calendar')
       ),
       _status: 'published'
     },

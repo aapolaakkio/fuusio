@@ -10,6 +10,24 @@ const messages = {
   footer: {
     copyright: '© {year} Fyysikkokilta ry'
   },
+  calendar: {
+    today: 'Tänään',
+    month: 'Kuukausi',
+    week: 'Viikko',
+    day: 'Päivä',
+    agenda: 'Agenda',
+    date: 'Päivämäärä',
+    time: 'Aika',
+    event: 'Tapahtuma',
+    allDay: 'Koko päivä',
+    workWeek: 'Työviikko',
+    previous: 'Edellinen',
+    next: 'Seuraava',
+    yesterday: 'Eilen',
+    tomorrow: 'Huomenna',
+    noEventsInRange: 'Ei tapahtumia tällä aikavälillä',
+    more: 'lisää'
+  },
   events: {
     title: 'Tapahtumat',
     upcoming: 'Tulevat tapahtumat',
