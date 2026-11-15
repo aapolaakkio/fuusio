@@ -1,0 +1,147 @@
+# AGENTS.md
+
+This file provides guidance for AI coding agents when working in the Fuusio 80 repository (website of the 80th annual ball of the Guild of Physics, based on fk-web).
+
+## Commands
+
+```bash
+pnpm dev              # Start dev server
+pnpm build            # Production build
+pnpm lint             # Lint (oxlint)
+pnpm format           # Format (oxfmt)
+pnpm format:check     # Check formatting
+pnpm typecheck        # TypeScript check (tsc --noEmit)
+pnpm typegen          # Generate Next.js types
+pnpm generate:types   # Generate Payload types → payload-types.ts
+pnpm generate:importmap  # Generate Payload import map
+pnpm generate:migration  # Create new migration (--skip-empty)
+pnpm generate:payload # Run all three generate commands at once
+pnpm migrate          # Run pending migrations
+```
+
+After changing Payload collections/globals/blocks, run `pnpm generate:payload` — CI checks that these are in sync.
+
+## Tech Stack
+
+- **Next.js 16** (App Router, canary) with `output: 'standalone'` and React Compiler enabled
+- **Payload CMS 3** — headless CMS with admin panel at `/admin`
+- **React 19** with server components
+- **PostgreSQL** via `@payloadcms/db-postgres`
+- **Tailwind CSS v4** — CSS-first config (no `tailwind.config.*`), configured in `globals.css`
+- **next-intl** for i18n routing and translations
+- **Zod v4** for validation
+- **pnpm 12** (enforced via `preinstall` script), Node >= 26, ESM (`"type": "module"`)
+
+## Project Structure
+
+```
+src/
+  app/
+    (frontend)/           # Public-facing site
+      [locale]/           # Locale-based routing (fi, en)
+        [...slug]/page.tsx  # Catch-all for CMS pages
+      api/draft/          # Enter draft mode
+      api/exit-draft/     # Exit draft mode
+    (payload)/            # Payload admin — excluded from oxlint
+  blocks/                 # Each block: config.ts + Component.tsx
+  collections/            # Payload collection configs
+  globals/                # Payload global configs
+  components/
+  i18n/                   # Routing, navigation, request config, translations (fi.ts, en.ts)
+  hooks/                  # Payload hooks (revalidation etc.)
+  access/                 # Access control helpers
+  utils/
+  env.ts                  # Environment validation (t3-oss/env-nextjs)
+  payload.config.ts
+```
+
+## Key Conventions
+
+### Formatting & Linting
+
+- Prettier: single quotes, no semicolons, no trailing commas, 100 char width, LF line endings
+- ESLint with `eslint-plugin-simple-import-sort` — import/export order is enforced as errors
+- Pre-commit hook runs lint-staged (oxlint + oxfmt + tsc)
+
+### Restricted Imports (ESLint errors)
+
+**Never import directly from `next/link` or navigation functions from `next/navigation`.** Enforced by oxlint `no-restricted-imports`.
+
+Use `@/i18n/routing` instead, which re-exports `Link`, `redirect`, `permanentRedirect`, `useRouter`, and `usePathname` from `next-intl/navigation` with locale-aware routing:
+
+```typescript
+// WRONG
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+// CORRECT
+import { Link, useRouter } from '@/i18n/navigation'
+```
+
+The routing module (`src/i18n/routing.ts`) and navigation module (`src/i18n/navigation.ts`) wrap `next-intl`.
+
+### No Raw Strings in JSX
+
+All user-visible text must use `next-intl` translations (`useTranslations` / `getTranslations`). Translation files are in `src/i18n/fi.ts` and `src/i18n/en.ts`. This is a project convention (no linter rule enforces it).
+
+### Path Alias
+
+`@/*` maps to `./src/*`. Use this for all imports.
+
+### Auto-generated Files
+
+These files are generated and must stay in sync — **do not hand-edit**:
+
+- `src/payload-types.ts` (from `pnpm generate:types`)
+- Payload import map (from `pnpm generate:importmap`)
+- Migration files in `src/migrations/` (from `pnpm generate:migration`)
+
+## Blocks Pattern
+
+Blocks are Payload CMS content blocks used inside the Lexical rich text editor. Each block lives in `src/blocks/<BlockName>/`:
+
+- `config.ts` — exports a `Block` config (e.g., `export const CalendarBlock: Block = { slug: 'calendar', ... }`)
+- `Component.tsx` — React component that renders the block on the frontend
+
+Blocks are registered in the Lexical editor config and rendered via JSX converters in `src/components/RichText/index.tsx`.
+
+Existing blocks: Card, Collapsible, Events (reads Ilmomasiina, see `src/lib/events.ts` and `src/lib/getEvents.ts`), PDFViewer, Team, TwoColumns.
+
+## i18n
+
+- Locales: `fi` (default), `en`
+- Frontend routes are under `[locale]/` — locale is resolved via `next/root-params` (experimental `rootParams` feature)
+- Payload CMS also uses `fi`/`en` localization with fallback enabled
+- Page paths are localized and unique per locale
+
+## Environment Variables
+
+Validated via `@t3-oss/env-nextjs` in `src/env.ts`. Always import as `import { env } from '@/env'` — never use `process.env` directly. Validation is skipped in CI (`IS_CI=true`).
+
+## Revalidation
+
+The `revalidateCollection` hook in `src/hooks/revalidateCollection.ts` wraps `revalidatePath` calls inside `after()` from `next/server`. This avoids the "revalidation during render" error. Non-page collections revalidate using the filesystem route path `/(frontend)/[locale]` with type `'layout'`.
+
+## Draft Mode
+
+Draft mode uses an API-based flow:
+
+- `/api/draft?slug=...` enters draft mode
+- `/api/exit-draft` exits draft mode
+- Use `isDraftMode()` from `src/utils/draftMode.ts` in page components
+- `DraftModeBanner` shows UI when in draft mode; `RefreshRouteOnSave` handles live preview refresh
+- Pages have autosave (200ms interval) and scheduled publishing
+
+## Theme
+
+Custom colors are defined as `fk-*` tokens in `globals.css` `@theme` (e.g., `fk-yellow`, `fk-orange`, `fk-blue`, etc.). Fonts: **Lora** (headings, weight 700) and **Source Sans 3** (body, weights 400/700).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

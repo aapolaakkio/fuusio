@@ -1,0 +1,79 @@
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+
+import {
+  formatEventTime,
+  getSignupState,
+  ilmoEventSchema,
+  selectEvents,
+  splitEvents
+} from './events.ts'
+
+const now = new Date('2027-03-13T12:00:00Z')
+
+const ilmoEvent = (overrides: Record<string, unknown>) =>
+  ilmoEventSchema.parse({
+    id: 'a',
+    title: 'Vuosijuhla',
+    slug: 'vuosijuhla',
+    date: '2027-03-13T15:00:00.000Z',
+    category: 'Fuusio 80',
+    location: 'Sali',
+    languages: { en: { title: 'Annual ball', location: null } },
+    ...overrides
+  })
+
+test('selectEvents filters by category, drops undated events and localizes with fallback', () => {
+  const events = [
+    ilmoEvent({}),
+    ilmoEvent({ id: 'b', category: 'excursiot' }),
+    ilmoEvent({ id: 'c', date: null })
+  ]
+  const [event, ...rest] = selectEvents(events, [' fuusio 80 '], 'en')
+  assert.equal(rest.length, 0)
+  assert.equal(event.title, 'Annual ball')
+  assert.equal(event.location, 'Sali')
+  assert.equal(selectEvents(events, ['Fuusio 80'], 'fi')[0].title, 'Vuosijuhla')
+})
+
+test('splitEvents sorts upcoming soonest first and past latest first', () => {
+  const events = [
+    { id: 'old', start: '2027-01-10T16:00:00Z', end: null },
+    { id: 'later', start: '2027-03-14T10:00:00Z', end: null },
+    { id: 'older', start: '2026-11-01T16:00:00Z', end: null },
+    { id: 'soon', start: '2027-03-13T16:00:00Z', end: null }
+  ]
+  const { upcoming, past } = splitEvents(events, now)
+  assert.deepEqual(
+    upcoming.map((event) => event.id),
+    ['soon', 'later']
+  )
+  assert.deepEqual(
+    past.map((event) => event.id),
+    ['old', 'older']
+  )
+})
+
+test('an ongoing event counts as upcoming until it ends', () => {
+  const ongoing = { start: '2027-03-13T08:00:00Z', end: '2027-03-13T20:00:00Z' }
+  assert.equal(splitEvents([ongoing], now).upcoming.length, 1)
+  assert.equal(splitEvents([ongoing], new Date('2027-03-13T21:00:00Z')).past.length, 1)
+})
+
+test('getSignupState follows the registration window', () => {
+  const window = {
+    registrationStart: '2027-02-01T10:00:00Z',
+    registrationEnd: '2027-03-01T10:00:00Z'
+  }
+  assert.equal(getSignupState({ registrationStart: null, registrationEnd: null }, now), 'none')
+  assert.equal(getSignupState(window, new Date('2027-01-01T00:00:00Z')), 'notYetOpen')
+  assert.equal(getSignupState(window, new Date('2027-02-10T00:00:00Z')), 'open')
+  assert.equal(getSignupState(window, now), 'closed')
+})
+
+test('formatEventTime uses Helsinki time', () => {
+  assert.match(
+    formatEventTime({ start: '2027-03-13T15:00:00Z', end: null }, 'fi'),
+    /13\.3\.2027.*17[.:]00/
+  )
+})

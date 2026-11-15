@@ -1,0 +1,266 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@plugin 'tailwind-scrollbar';
+
+/* https://uicolors.app/generate */
+/* Colors are mainly 300 points apart from each other */
+
+@theme {
+  /* Fuusio 80 palette: the guild's black, yellow and white, plus a colorful fusion glow as accents */
+  --color-fuusio-deep: #000000; /* Footer, sponsors */
+  --color-fuusio-night: #0b0a06; /* Page background, header: true black with a hint of warmth, not grey */
+  --color-fuusio-surface: #1d1803; /* Raised surfaces: cards, tinted with yellow */
+  --color-fuusio-pink: #ff4d9d; /* Accent */
+  --color-fuusio-orange: #ff8a04; /* Accent, same as website orange */
+  --color-fuusio-sky: #6fe3ff; /* Cool accent for small details */
+
+  --color-fk-white: #ffffff; /* FK white */
+
+  --color-fk-black: #000000; /* FK black */
+
+  --color-fk-gray: #201e1e; /* FK gray */
+  --color-fk-gray-light: #686162; /* FK gray light */
+  --color-fk-gray-lightest: #bfbaba; /* FK gray lightest */
+
+  --color-fk-yellow: #fbdb1d; /* FK yellow */
+  --color-fk-yellow-light: #fefcc3; /* FK yellow light */
+  --color-fk-yellow-dark: #a26b06; /* FK yellow dark */
+
+  --color-fk-orange: #ff8a04; /* Website orange */
+  --color-fk-orange-light: #ffe2a8; /* Website orange light */
+  --color-fk-orange-dark: #9e440e; /* Website orange dark */
+
+  --color-fk-blue: #007bff; /* Website blue */
+  --color-fk-blue-light: #48cbff; /* Website blue light */
+  --color-fk-blue-dark: #0d519b; /* Website blue dark */
+
+  --color-fk-green: #28a745; /* Website green */
+  --color-fk-green-light: #90e5a3; /* Website green light */
+  --color-fk-green-dark: #1a4d27; /* Website green dark */
+
+  --color-fk-red: #911f2f; /* Website red */
+  --color-fk-red-light: #e35055; /* Website red light */
+  --color-fk-red-lightest: #f9d3d2; /* Website red lightest */
+
+  --color-fk-purple: #6f42c1; /* Website purple */
+  --color-fk-purple-light: #ac9aeb; /* Website purple light */
+  --color-fk-purple-dark: #4d2e84; /* Website purple dark */
+}
+
+@layer base {
+  /* Set default text color for prose */
+  .prose-fk {
+    color: var(--color-fk-white);
+  }
+
+  /* Custom prose styles for FK website */
+  .prose-fk {
+    @apply prose prose-invert text-fk-white max-w-none;
+  }
+
+  /* Headings */
+  .prose-fk h1,
+  .prose-fk h2,
+  .prose-fk h3,
+  .prose-fk h4,
+  .prose-fk h5,
+  .prose-fk h6 {
+    font-family: var(--font-display);
+    font-variation-settings:
+      'SOFT' 100,
+      'WONK' 1;
+    font-weight: 800;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--color-fk-yellow);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 8px;
+  }
+
+  /* Links */
+  .prose-fk a {
+    color: var(--color-fk-yellow);
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    font-weight: bold;
+    transition: color 0.2s;
+  }
+
+  .prose-fk a:hover {
+    color: var(--color-fuusio-pink);
+    text-decoration-thickness: 3px;
+  }
+
+  /* Strong text */
+  .prose-fk strong {
+    color: inherit;
+  }
+
+  /* Blockquotes */
+  .prose-fk blockquote {
+    border-left: 4px solid var(--color-fk-yellow);
+    background-color: var(--color-fuusio-surface);
+    font-style: italic;
+    color: var(--color-fk-white);
+    padding-left: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+  }
+
+  /* Images */
+  .prose-fk img {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  }
+
+  /* Unordered lists */
+  .prose-fk ul {
+    list-style-type: disc;
+  }
+
+  .prose-fk ul li::marker {
+    color: var(--color-fk-yellow);
+  }
+
+  /* Ordered lists */
+  .prose-fk ol {
+    list-style-type: decimal;
+  }
+
+  .prose-fk ol li::marker {
+    color: var(--color-fk-yellow);
+    font-weight: bold;
+  }
+
+  /* Inline code */
+  .prose-fk code {
+    background-color: rgb(219 234 254);
+    color: rgb(30 64 175);
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .prose-fk code::before,
+  .prose-fk code::after {
+    content: none;
+  }
+
+  /* Code blocks */
+  .prose-fk pre {
+    background-color: rgb(23 37 84);
+    color: rgb(219 234 254);
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    overflow-x: auto;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    border-left: 4px solid rgb(96 165 250);
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Enhance checkboxes in prose */
+  .prose-fk input[type='checkbox'] {
+    width: 1.25em;
+    height: 1.25em;
+    accent-color: var(--color-fk-yellow);
+    border-radius: 0.375em;
+    border: 2px solid var(--color-fk-gray-lightest);
+    margin-right: 0.5em;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    vertical-align: middle;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .prose-fk input[type='checkbox']:focus {
+    outline: none;
+    border-color: var(--color-fk-yellow);
+    box-shadow: 0 0 0 2px var(--color-fk-yellow-light);
+  }
+
+  /* Enhance tables in prose */
+  .prose-fk table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.75em;
+    overflow: hidden;
+    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 0.04);
+    margin-bottom: 2em;
+  }
+
+  .prose-fk th,
+  .prose-fk td {
+    text-align: left;
+  }
+
+  .prose-fk th {
+    font-weight: bold;
+    color: var(--color-fk-gray);
+    background: var(--color-fk-yellow);
+  }
+
+  .prose-fk tr:nth-child(even) td {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  /* The fusion glow: yellow core, orange and pink halo, fading into the night */
+  .hero-glow {
+    background:
+      radial-gradient(circle at 50% 115%, rgb(251 219 29 / 0.95), transparent 38%),
+      radial-gradient(circle at 50% 120%, rgb(255 138 4 / 0.9), transparent 55%),
+      radial-gradient(circle at 15% 100%, rgb(255 77 157 / 0.75), transparent 50%),
+      radial-gradient(circle at 85% 100%, rgb(255 77 157 / 0.75), transparent 50%),
+      radial-gradient(circle at 80% 0%, rgb(111 227 255 / 0.25), transparent 40%),
+      var(--color-fuusio-night);
+  }
+
+  /* Global focus ring for all focusable elements */
+  *:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--color-fk-yellow),
+      0 0 0 4px transparent;
+    border-radius: 0.375rem;
+  }
+}
+
+/* Utilities (not plain classes) so that variants like first: and data-[active]: work with them */
+
+/* Display font with its playful axes on, for headings outside rich text */
+@utility font-display {
+  font-family: var(--font-display);
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 1;
+  font-weight: 800;
+}
+
+@utility text-glow {
+  background: linear-gradient(
+    100deg,
+    var(--color-fk-yellow),
+    var(--color-fuusio-orange) 55%,
+    var(--color-fuusio-pink)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-glow {
+  background: linear-gradient(100deg, var(--color-fk-yellow), var(--color-fuusio-orange));
+  color: var(--color-fk-black);
+}

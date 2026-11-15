@@ -1,0 +1,18 @@
+services:
+  app:
+    image: ghcr.io/fyysikkokilta/fuusio:latest
+    restart: always
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - ./public/media:/app/public/media
+      - ./public/documents:/app/public/documents
+    env_file:
+      - .env
+    ports:
+      - '127.0.0.1:8002:3000'
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '5'
